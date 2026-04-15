@@ -100,7 +100,7 @@ function init() {
 
 function loadAsset(asset) {
 
-    loader.load('models/fbx/' + asset + '.fbx', function (group) {
+    loader.load('./assets/models/fbx/' + asset + '.fbx', function (group) {
 
         if (object) {
 
