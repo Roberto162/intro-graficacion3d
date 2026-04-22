@@ -1,12 +1,121 @@
 body {
-	margin: 0;
-	background-color: #000;
-	color: #fff;
-	font-family: Monospace;
-	font-size: 13px;
-	line-height: 24px;
-	overscroll-behavior: none;
+    margin: 0;
+    background: radial-gradient(circle, #2a2a2a, #111);
+    overflow: hidden;
 }
+
+
+.control-panel {
+    background: rgba(255,255,255,0.05);
+    padding: 15px 20px;
+    border-radius: 12px;
+    width: fit-content;
+    backdrop-filter: blur(10px);
+}
+
+.title {
+    font-size: 14px;
+    margin-bottom: 10px;
+    color: #ccc;
+}
+
+
+.hud-menu {
+    position: absolute;
+    top: 70px; /* debajo del navbar */
+    left: 20px;
+
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(10px);
+
+    padding: 12px 15px;
+    border-radius: 12px;
+
+    color: #fff;
+    z-index: 10;
+}
+
+/* título */
+.hud-menu .title {
+    font-size: 13px;
+    margin-bottom: 8px;
+    color: #ccc;
+}
+
+/* contenedor */
+.controls {
+    display: flex;
+    gap: 10px;
+}
+
+/* botones */
+.control-box {
+    text-align: center;
+    cursor: pointer;
+}
+
+.control-box span {
+    display: block;
+    background: #0d6efd;
+    padding: 5px 9px;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.control-box small {
+    font-size: 10px;
+    color: #aaa;
+}
+
+/* hover */
+.control-box:hover span {
+    background: #0b5ed7;
+}
+
+/* Teclas */
+.key {
+    display: inline-block;
+    font-size: 20px;
+    font-weight: bold;
+    background: #0d6efd;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 5px;
+}
+
+/* Footer */
+.footer-custom {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    padding: 6px;
+    font-size: 12px;
+    color: #888;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(5px);
+}
+/* Info */
+#info {
+    color: #bbb;
+}
+
+.navbar-custom {
+    background: rgba(20, 20, 20, 0.9);
+    backdrop-filter: blur(8px);
+    padding: 8px 0;
+}
+
+.nav-text {
+    font-size: 14px;
+    color: #ddd;
+    font-weight: 500;
+}
+
+canvas {
+    display: block;
+}
+
 
 a {
 	color: #ff0;
