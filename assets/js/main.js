@@ -18,12 +18,19 @@ const params = {
     asset: 'Samba Dancing'
 };
 
+const animationsList = {
+    death: './assets/models/fbx/Death_From_Right.fbx',
+    entry: './assets/models/fbx/Entry.fbx',
+    walk: './assets/models/fbx/Walk_To_Stop.fbx',
+    crawl: './assets/models/fbx/Zombie_Crawl.fbx',
+    transition: './assets/models/fbx/Zombie_Transition.fbx'
+};
 const assets = [
-    'Samba Dancing',
-    'morph_test',
-    'monkey',
-    'monkey_embedded_texture',
-    'vCube',
+    'Zombie_Transition',
+    'Entry',
+    'Walk_To_Stop',
+    'Zombie_Crawl',
+    'Death_From_Right',
 ];
 
 
@@ -68,7 +75,7 @@ function init() {
     scene.add(grid);
 
     loader = new FBXLoader(manager);
-    loadAsset(params.asset);
+    loadModel();
 
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setPixelRatio(window.devicePixelRatio);
@@ -87,18 +94,9 @@ function init() {
     stats = new Stats();
     container.appendChild(stats.dom);
 
-    const gui = new GUI();
-    gui.add(params, 'asset', assets).onChange(function (value) {
-
-        loadAsset(value);
-
-    });
-
-    guiMorphsFolder = gui.addFolder('Morphs').hide();
-
 }
 
-function loadAsset(asset) {
+/*function loadAsset(asset) {
 
     loader.load('./assets/models/fbx/' + asset + '.fbx', function (group) {
 
@@ -179,7 +177,7 @@ function loadAsset(asset) {
 
     });
 
-}
+}*/
 
 function onWindowResize() {
 
@@ -205,3 +203,94 @@ function animate() {
     stats.update();
 
 }
+let actions = {};
+let activeAction;
+
+function loadModel() {
+    loader.load('./assets/models/fbx/Zombie_Transition.fbx', function (fbx) {
+
+        object = fbx;
+        mixer = new THREE.AnimationMixer(object);
+
+        scene.add(object);
+
+        loadAnimations();
+    });
+}
+
+function loadAnimations() {
+    const animLoader = new FBXLoader();
+
+    for (let key in animationsList) {
+
+        animLoader.load(animationsList[key], function (anim) {
+             if (!mixer) return;
+
+            const clip = anim.animations[0];
+            const action = mixer.clipAction(clip);
+
+// 🔥 CONFIGURACIÓN PRO
+action.enabled = true;
+action.setEffectiveWeight(1);
+action.setEffectiveTimeScale(1);
+
+// evita congelamientos raros
+action.clampWhenFinished = false;
+action.loop = THREE.LoopRepeat;
+
+// 🔥 MUY IMPORTANTE
+action.zeroSlopeAtStart = true;
+action.zeroSlopeAtEnd = true;
+
+
+            actions[key] = action;
+            if (key === 'entry') {
+            activeAction = action;
+            action.play();
+}
+
+        });
+    }
+}
+
+function playAnimation(name) {
+
+    const newAction = actions[name];
+    if (!newAction || newAction === activeAction) return;
+
+    newAction.enabled = true;
+
+    // 🔥 iniciar sin reiniciar
+    newAction.paused = false;
+
+    if (activeAction) {
+
+        // 🔥 sincronización por progreso (no por tiempo directo)
+        const oldClip = activeAction.getClip();
+        const newClip = newAction.getClip();
+
+        const progress = activeAction.time / oldClip.duration;
+        newAction.time = progress * newClip.duration;
+
+        // 🔥 mezcla real
+        newAction.crossFadeFrom(activeAction, 1.2, true);
+
+    } else {
+        newAction.fadeIn(1.2);
+    }
+
+    newAction.play();
+    activeAction = newAction;
+}
+
+window.addEventListener('keydown', (e) => {
+
+    switch (e.key) {
+        case '1': playAnimation('death'); break;
+        case '2': playAnimation('entry'); break;
+        case '3': playAnimation('walk'); break;
+        case '4': playAnimation('crawl'); break;
+        case '5': playAnimation('transition'); break;
+    }
+
+});
